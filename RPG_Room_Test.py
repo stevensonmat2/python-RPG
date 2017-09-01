@@ -38,7 +38,7 @@ def showStatus():
 
 # validcommands = ['go', 'take', 'equip', 'use', 'drop', 'fight', 'inv']
 
-inventory = []
+inventory = ['sword', 'cap', 'robe', 'potion', 'noweap']
 
 
 
@@ -82,11 +82,17 @@ allItems = {
 
 3 : {
          1: {'name': 'potion',
-                    'restore': 4,
+                    'restore': 4},
          2: {'name': 'book'},
 
-             }},
+             },
 
+4 : {
+         1: {'name': 'potion',
+                    'restore': 4},
+         2: {'name': 'book'},
+
+             },
 }
 
 enemies = {
@@ -97,7 +103,7 @@ enemies = {
                         'health': 4,
                         'attack': 3,
                         'item': 'potion'},
-           2: {   'ran_num': 2,
+           2: {         'ran_num': 2,
                         'name': 'ghoul',
                         'type': 'ghoul',
                         'health': 5,
@@ -148,15 +154,15 @@ rooms = {
 }
 
 
-
-items = {0: {'name': 'cobweb'},
-
-         1:{'name': 'sword'},
-
-         2:{'name': 'helm'},
-
-
-}
+#
+# items = {0: {'name': 'cobweb'},
+#
+#          1:{'name': 'sword'},
+#
+#          2:{'name': 'helm'},
+#
+#
+# }
 
 enemyItems = { 0: {'name': 'great helm',
                    'defense': 2,
@@ -187,7 +193,7 @@ enemyItems = { 0: {'name': 'great helm',
 #          }
 currentRoom = 0
 currentEnemy = 'n'
-currentWeap = 'noweap'
+currentWeap = 'sword'
 currentArm = 'noarm'
 currentHelm = 'nohelm'
 currentSpell = 'n'
@@ -510,26 +516,46 @@ while True:
         print('---------------')
         query = input('type "[item]" for details or any key to exit: ')
         if query in inventory:
-            if query in weapons:
-                print('---------------')
-                print(weapons[query])
-            if query in armor:
-                print('---------------')
-                print(armor[query])
-            if query in items:
-                print('---------------')
-                print(items[query])
+            type = range(len(allItems.keys()))
+
+            # scan = allItems[0].keys()
+            for x in type:
+                scan = allItems[x].keys()
+                for i in scan:
+                    if query in allItems[x][i]['name']:
+                        print('---------------')
+                        read = allItems[x][i].items()
+                        for pair in read:
+                            print('{}: {}'.format(pair[0], pair[1]))
+                            # print(pair)#('{} {}'.format(pair))
+                        # print('{} {}'.format('name', 'cap'))
+                        # print(allItems[x][i]['name'], allItems[x][i])
+
+
+                # if query in allItems[2]:
+                #     print('---------------')
+                #     print(allItems[2][query])
+                # if query in allItems[3]:
+                #     print('---------------')
+                #     print(allItems[3][query])
         # else:
         #     pass
         #     print('---------------')
 
     if move[0] == 'take':
-        if 'item' in rooms[currentRoom] and move[1] in rooms[currentRoom]['item']:
-            inventory += [rooms[currentRoom]['item']]
+        # if move[1] == roomItem['name']:
+        if move[1] in rooms[currentRoom]['item']['name']:
+            inventory.append(roomItem['name'])
             print('---------------')
             print(move[1] + ' obtained!')
             print('---------------')
+            print(roomItem)
+            # roomItem =
             del rooms[currentRoom]['item']
+            roomItem = 0
+
+
+
             # inventory[item] = item
         else:
             print('---------------')
@@ -621,9 +647,12 @@ while True:
             currentEnemy = rooms[currentRoom]['enemy']
             # print(enemyHealth)#take out
             if 'enemy' in rooms[currentRoom] and currentWeap != 'noweap':
-                print('you hit ' + rooms[currentRoom]['enemy'] + ' with ' + str(currentWeap))
-                enemyHealth = enemies[currentEnemy]['health']
-                enemyHealthNow = enemyHealth - weapons[currentWeap]['attack']
+                # print('you hit ' + rooms[currentRoom]['enemy'] + ' with ' + str(currentWeap))
+                print('you hit ' + str(roomEnemy['name']) + ' with ' + str(currentWeap))
+
+                enemyHealth = roomEnemy['health']
+                # enemyHealth = enemies[currentEnemy]['health']
+                enemyHealthNow = enemyHealth - allItems[0][currentWeap]['attack']
                 enemyHealthRem = enemyHealth - enemyHealthNow
                 enemyHealthCurr = enemyHealthCurr + enemyHealthRem
                 enemyHealthFin = enemyHealth - enemyHealthCurr
