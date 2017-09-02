@@ -27,13 +27,20 @@ def showStatus():
     if currentRoom == 0:
         print(rooms[currentRoom])
     print('---------------')
-    if 'item' in rooms[currentRoom]:
-        print('you see a ' + roomItem['name'])
+    if roomItem != 0:
+        if 'item' in rooms[currentRoom]:
+            print('you see a ' + roomItem['name'])
+    if 'new_item' in rooms[currentRoom]:
+        # print(roomItemSecond)
+        print('you see a ' + roomItemSecond['name'])
+
+            # print('you also see a ' + roomItem['2']['name'])
     print('---------------')
-    if 'enemy' in rooms[currentRoom]:
-        currentEnemy = rooms[currentRoom]['enemy']
-        # print(currentEnemy)#take out
-        print('you see a ' + roomEnemy['name'])
+    if roomEnemy != 0:
+        if 'enemy' in rooms[currentRoom]:
+            currentEnemy = rooms[currentRoom]['enemy']
+            # print(currentEnemy)#take out
+            print('you see a ' + roomEnemy['name'])
     print('---------------')
 
 # validcommands = ['go', 'take', 'equip', 'use', 'drop', 'fight', 'inv']
@@ -193,16 +200,17 @@ enemyItems = { 0: {'name': 'great helm',
 #          }
 currentRoom = 0
 currentEnemy = 'n'
-currentWeap = 'sword'
+currentWeap = {'name': 'sword',
+                    'attack': 2}
 currentArm = 'noarm'
 currentHelm = 'nohelm'
 currentSpell = 'n'
 currentItem = 'n'
 
 playerDef = 1
-playerHealthMax = 8
-playerHealthNow = 8
-playerHealthCurr = 8
+playerHealthMax = 20
+playerHealthNow = 20
+playerHealthCurr = 20
 enemyHealthNow = 1
 enemyHealth = 1
 enemyHealthCurr = 0
@@ -258,7 +266,8 @@ while True:
                     # rooms[currentRoom][move[0]] = lastRoom + 1
                     print(prevRoom)
                     print(currentRoom)
-
+                    roomEnemy = 0
+                    roomItem = 0
                     if move[1] == 'south':
 
                         rooms[currentRoom] = {'name': 'hallway',  # for lastRoom: rooms[currentRoom} + 1 = etc..
@@ -380,6 +389,8 @@ while True:
                     currentRoom = rooms[currentRoom][move[1]]
                     lastRoom = currentRoom
                     print(lastRoom)
+                    roomItem = 0
+                    roomEnemy = 0
                     if move[1] == 'south':
                         # rooms[currentRoom] = {'north': 'n'}
                         rooms[currentRoom] = {'name': 'hallway',
@@ -503,7 +514,10 @@ while True:
                         pass
 
             else:
-
+                if 'item' in rooms[currentRoom]:
+                    roomItem = rooms[currentRoom]['item']
+                if 'enemy' in rooms[currentRoom]:
+                    roomEnemy = rooms[currentRoom]['enemy']
                 currentRoom = rooms[currentRoom][move[1]]
                 print(rooms[currentRoom])
 
@@ -544,7 +558,7 @@ while True:
 
     if move[0] == 'take':
         # if move[1] == roomItem['name']:
-        if move[1] in rooms[currentRoom]['item']['name']:
+        if move[1] in rooms[currentRoom]['item']['name']: #or rooms[currentRoom]['new_tem']:
             inventory.append(roomItem['name'])
             print('---------------')
             print(move[1] + ' obtained!')
@@ -553,7 +567,7 @@ while True:
             # roomItem =
             del rooms[currentRoom]['item']
             roomItem = 0
-
+            print(roomItem)
 
 
             # inventory[item] = item
@@ -642,53 +656,80 @@ while True:
 
     if move[0] == 'fight':
         print('---------------')
-        if 'enemy' in rooms[currentRoom]:
+        fighting = True
+        while fighting == True:
+            if 'enemy' in rooms[currentRoom]:
 
-            currentEnemy = rooms[currentRoom]['enemy']
-            # print(enemyHealth)#take out
-            if 'enemy' in rooms[currentRoom] and currentWeap != 'noweap':
-                # print('you hit ' + rooms[currentRoom]['enemy'] + ' with ' + str(currentWeap))
-                print('you hit ' + str(roomEnemy['name']) + ' with ' + str(currentWeap))
+                currentEnemy = rooms[currentRoom]['enemy']
+                # print(enemyHealth)#take out
 
-                enemyHealth = roomEnemy['health']
-                # enemyHealth = enemies[currentEnemy]['health']
-                enemyHealthNow = enemyHealth - allItems[0][currentWeap]['attack']
-                enemyHealthRem = enemyHealth - enemyHealthNow
-                enemyHealthCurr = enemyHealthCurr + enemyHealthRem
-                enemyHealthFin = enemyHealth - enemyHealthCurr
-                print('---------------')
-                print('enemy HP = ' + str(enemyHealthFin))
-                print('---------------')
-            else:
-                print('***************')
-                print('NO WEAPON EQUIPPED')
-                print('***************')
-                continue
-                # print(enemyHealth)
-            if enemyHealthFin <= 0:
-                print(rooms[currentRoom]['enemy'] + ' slain!')
-                print('---------------')
-                rooms[currentRoom]['item'] = enemies[currentEnemy]['item']
-                print(rooms[currentRoom]['enemy'] + ' dropped ' + enemies[currentEnemy]['item'])
-                print('---------------')
-                del rooms[currentRoom]['enemy']
-                enemyHealthCurr = 0
-                    # print(rooms[currentRoom]['enemy'] + ' slain!')
+                if 'enemy' in rooms[currentRoom] and currentWeap != 'noweap':
 
-            else:
-                print('---------------')
-                print(rooms[currentRoom]['enemy'] + ' fights back!')
-                print('---------------')
-                playerHealthCurr = playerHealthNow - (enemies[currentEnemy]['attack'] - playerDef)
-                playerHealthNow = playerHealthCurr
-                print('---------------')
-                print('player HP = ' + str(playerHealthNow))
-                print('---------------')
-                # enemyHealthCurr = enemyHealthNow
-                # query = input('Hit Again? (y/n): ')
-                # print('---------------')
-                #
-                # if query == 'y':
+                    # print('you hit ' + rooms[currentRoom]['enemy'] + ' with ' + str(currentWeap))
+                    print('you hit ' + str(roomEnemy['name']) + ' with ' + str(currentWeap['name']))
+
+                    enemyHealth = roomEnemy['health']
+                    # print(roomEnemy)
+                    # print(enemyHealth)
+                    # print(currentWeap)
+                    weaponAtk = currentWeap['attack']
+                    # print(weaponAtk)
+                    # enemyHealth = enemies[currentEnemy]['health']
+                    enemyHealthNow = enemyHealth - weaponAtk
+                    # enemyHealthNow = enemyHealth - allItems[0][0][currentWeap]['attack']
+                    enemyHealthRem = enemyHealth - enemyHealthNow
+                    enemyHealthCurr = enemyHealthCurr + enemyHealthRem
+                    enemyHealthFin = enemyHealth - enemyHealthCurr
+                    print('---------------')
+                    print('enemy HP = ' + str(enemyHealthFin))
+                    print('---------------')
+                else:
+                    print('***************')
+                    print('NO WEAPON EQUIPPED')
+                    print('***************')
+                    continue
+                    # print(enemyHealth)
+                if enemyHealthFin <= 0:
+                    print(roomEnemy['name'] + ' slain!')
+                    print('---------------')
+                    fighting = False
+
+                    # item_chance = randint(1, 10)
+                    # if item_chance > 7:
+                    rooms[currentRoom]['new_item'] = allItems[randint(0, 4)][randint(1, 2)]
+                    # secondItem = rooms[currentRoom]['new_item']
+                    roomItemSecond = rooms[currentRoom]['new_item']
+
+
+
+                    # rooms[currentRoom]['item'] = enemies[currentEnemy]['item']
+                    print(roomEnemy['name'] + ' dropped ' + roomItemSecond['name'])
+                    print('---------------')
+                    del rooms[currentRoom]['enemy']
+                    enemyHealthCurr = 0
+                    roomEnemy = 0
+                    # print(rooms[currentRoom])
+                        # print(rooms[currentRoom]['enemy'] + ' slain!')
+
+                else:
+                    # fighting = True
+                    # while fighting == True:
+                    print('---------------')
+                    print(roomEnemy['name'] + ' fights back!')
+                    print('---------------')
+                    playerHealthCurr = playerHealthNow - (roomEnemy['attack'] - playerDef)
+                    playerHealthNow = playerHealthCurr
+                    print('---------------')
+                    print('player HP = ' + str(playerHealthNow))
+                    print('---------------')
+
+                    query = input('Hit Again? (y/n): ')
+                    print('---------------')
+
+                    if query == 'y':
+                        continue
+                    elif query == 'n':
+                        fighting = False
                 #     enemyHealth = enemyHealth - items[currentWeap]['attack']
                 #     if enemyHealth == 0:
                 #         print(rooms[currentRoom]['enemy'] + ' slain!')
@@ -705,10 +746,10 @@ while True:
                 #     print('run away!')
 
 
-        else:
-            print('---------------')
-            print('nothing to fight here')
-            print('---------------')# else:
+            else:
+                print('---------------')
+                print('nothing to fight here')
+                print('---------------')# else:
 
     if playerHealthNow <= 0:
         print('You died! Game over, man! Game over!')
