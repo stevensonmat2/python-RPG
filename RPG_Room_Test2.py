@@ -581,18 +581,18 @@ while True:
     if move[0] == 'take':#NEED TO RESOLVE ISSUE
 
         # MAKE LIST OF ROOM ITEMS
-        if move[1] == rooms[currentRoom]['item']['name']:
-            inventory.append(roomItem['name'])
-            print('---------------')
-            print(move[1] + ' obtained!')
-            print('---------------')
-            print(roomItem)
-            # roomItem =
-            del rooms[currentRoom]['item']
-            roomItem = 0
-            print(roomItem)
-        # else:
-        elif move[1] == rooms[currentRoom]['new_item']['name']:
+        # if move[1] == rooms[currentRoom]['item']['name']:
+        #     inventory.append(roomItem['name'])
+        #     print('---------------')
+        #     print(move[1] + ' obtained!')
+        #     print('---------------')
+        #     print(roomItem)
+        #     # roomItem =
+        #     del rooms[currentRoom]['item']
+        #     roomItem = 0
+        #     print(roomItem)
+        # # else:
+        if move[1] == rooms[currentRoom]['new_item']['name']:
             inventory.append(roomItemSecond['name'])
             print('---------------')
             print(move[1] + ' obtained!')
